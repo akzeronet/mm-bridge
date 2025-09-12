@@ -43,6 +43,8 @@ async function getBotId() {
   return j.id;
 }
 
+const N8N_API_KEY = process.env.N8N_API_KEY || '';
+
 async function postToN8n(payload) {
   const originHost = new URL(MM_WS_URL).hostname;
 
@@ -67,7 +69,9 @@ async function postToN8n(payload) {
     'x-agency-timestamp': ts,
     'x-agency-nonce': nonce,
     'x-agency-payload-sha256': payloadHash,
-    'x-agency-canonical': canonical
+    'x-agency-canonical': canonical,
+    // 👇 API key para el “Header Auth” del Webhook
+    ...(N8N_API_KEY ? { 'x-api-key': N8N_API_KEY } : {})
   };
   if (signature) headers['x-agency-signature'] = signature;
 
