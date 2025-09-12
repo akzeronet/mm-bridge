@@ -1,0 +1,6 @@
+services:
+  bridge:
+    build: .
+    image: mm-bridge:latest
+    env_file: .env
+    restart: unless-stopped
