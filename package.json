@@ -1,0 +1,12 @@
+{
+  "name": "mm-bridge",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Mattermost WebSocket → n8n secure bridge",
+  "dependencies": {
+    "ws": "^8.18.0"
+  },
+  "scripts": {
+    "start": "node bridge.js"
+  }
+}
