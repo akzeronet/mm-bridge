@@ -7,6 +7,7 @@ Bridge por WebSocket que escucha eventos `posted` en Mattermost y los reenvía a
 
 ## Setup rápido
 ```bash
-git clone <este-repo>
+git clone https://github.com/akzeronet/mm-bridge.git
 cd mm-bridge
+chmod +x bin/configure.sh
 ./bin/configure.sh    # menú interactivo; genera .env
