@@ -57,25 +57,31 @@ return [{ verified:true, data: body }];
 ```
 
 ### Conecta eso a un IF:
+```
 Si verified == true → sigue tu flujo normal.
 Si no → Respond to Webhook con 401 Unauthorized y termina.
-Ventajas: si alguien adivina el endpoint pero no tiene X-API-Key ni el HMAC y timestamp/nonce válidos, se queda fuera.
 
+Ventajas: si alguien adivina el endpoint pero no tiene X-API-Key ni el HMAC y timestamp/nonce válidos, se queda fuera.
+```
 ## 3) Buenas prácticas extra (rápidas)
+```
 * Usa solo el Production URL del Webhook; desactiva o ignora el Test URL.
 * Limita el Webhook a POST únicamente.
 * Rotación periódica de X-API-Key, N8N_SHARED_SECRET y el token del bot de Mattermost.
 (Opcional) Rate-limit al inicio del workflow (por user_id/minuto).
 (Opcional) Si el bridge sale de IP fija, filtra por IP frente a n8n (proxy/WAF).
+```
 
 ## 4) Resumen de variables a tener
 ### En el bridge:
+```
 MM_WS_URL, MM_BOT_TOKEN, N8N_WEBHOOK
 N8N_SHARED_SECRET (para HMAC) ✅
 N8N_API_KEY (para Header Auth del Webhook) ✅
-
+```
 ### En n8n:
+```
 * Activa Header Auth en el Webhook con X-API-Key = <N8N_API_KEY>
 * Define N8N_SHARED_SECRET (env del sistema o hardcode en el Function si no tienes envs)
-
+```
 > Con eso tu Webhook queda cerrado por dos puertas: Header Auth (bloquea antes de ejecutar) y HMAC + anti-replay (valida a nivel de workflow).
