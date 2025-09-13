@@ -5,12 +5,14 @@ Mattermost Bot WSS ->  n8n Webhook
 
 Bridge por WebSocket que escucha eventos `posted` en Mattermost y los reenvía a n8n con metadatos y firma HMAC.
 
-## Setup rápido
+## 1) Setup rápido
 ```bash
 git clone https://github.com/akzeronet/mm-bridge.git
 cd mm-bridge
 chmod +x bin/configure.sh
 ./bin/configure.sh    # menú interactivo; genera .env
+make up                   # build + run
+make logs                 # ver logs en vivo
 ```
 Es muy recomendable activar autenticación en el Webhook de n8n y además verificar la firma HMAC que ya te dejo el bridge. Hazlo así (rápido y seguro):
 
@@ -26,7 +28,7 @@ Header Value: un secreto largo (ej. generado con openssl rand -hex 32)
 
 > Esto hace que n8n rechace (403) cualquier request sin ese header correcto.
 
-## Verifica la firma HMAC dentro del workflow (defensa en profundidad)
+## 2) Verifica la firma HMAC dentro del workflow (defensa en profundidad)
 Justo después del Webhook, añade un Function node que haga:
 
 ```
@@ -85,3 +87,17 @@ N8N_API_KEY (para Header Auth del Webhook) ✅
 * Define N8N_SHARED_SECRET (env del sistema o hardcode en el Function si no tienes envs)
 ```
 > Con eso tu Webhook queda cerrado por dos puertas: Header Auth (bloquea antes de ejecutar) y HMAC + anti-replay (valida a nivel de workflow).
+
+
+### Comandos útiles en ssh
+```
+make up / make down / make logs / make restart
+```
+Edita .env para cambiar URLs/secretos y make update.
+
+Seguridad
+Headers enviados: x-bridge-origin, x-agency-instance, x-agency-timestamp, x-agency-nonce, x-agency-payload-sha256, x-agency-canonical, x-agency-signature.
+
+Firma HMAC: HMAC_SHA256(secret, canonical), donde canonical = ts.nonce.sha256(body).
+
+En n8n, verifica firma y ventana de tiempo (±5min). Rechaza si no coincide.
