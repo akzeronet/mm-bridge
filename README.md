@@ -74,6 +74,13 @@ Ventajas: si alguien adivina el endpoint pero no tiene X-API-Key ni el HMAC y ti
 (Opcional) Si el bridge sale de IP fija, filtra por IP frente a n8n (proxy/WAF).
 ```
 
+### Seguridad
+```
+Headers enviados: x-bridge-origin, x-agency-instance, x-agency-timestamp, x-agency-nonce, x-agency-payload-sha256, x-agency-canonical, x-agency-signature.
+Firma HMAC: HMAC_SHA256(secret, canonical), donde canonical = ts.nonce.sha256(body).
+En n8n, verifica firma y ventana de tiempo (±5min). Rechaza si no coincide.
+```
+
 ## 4) Resumen de variables a tener
 ### En el bridge:
 ```
@@ -95,9 +102,3 @@ make up / make down / make logs / make restart
 ```
 Edita .env para cambiar URLs/secretos y make update.
 
-Seguridad
-Headers enviados: x-bridge-origin, x-agency-instance, x-agency-timestamp, x-agency-nonce, x-agency-payload-sha256, x-agency-canonical, x-agency-signature.
-
-Firma HMAC: HMAC_SHA256(secret, canonical), donde canonical = ts.nonce.sha256(body).
-
-En n8n, verifica firma y ventana de tiempo (±5min). Rechaza si no coincide.
